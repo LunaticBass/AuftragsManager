@@ -1,5 +1,7 @@
 package model;
 
+import javax.persistence.Entity;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,6 +12,7 @@ package model;
  *
  * Artikel Unterklasse, hat weitere Unterklassen
  */
+@Entity
 public abstract class Hose extends Artikel{
             
     public Hose(){

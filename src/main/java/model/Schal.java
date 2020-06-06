@@ -1,9 +1,10 @@
 package model;
 
 import java.util.Map;
-
+import javax.persistence.Entity;
 
 /** Unterklasse der Klasse Artikel */
+@Entity
 public class Schal extends Artikel{
     private static Map<Waehrung, Double> PRICELIST = 
             PriceListManager.readMützeSchalStirnband("PreisListe.csv", Schal.class);   

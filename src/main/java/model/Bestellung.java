@@ -6,13 +6,22 @@
 package model;
 
 import java.time.LocalDate;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
  *
  * Klasse für Bestellungen mit Kunden_ID Referenz
  */
+@Entity
+@Table(name="bestellung")
 public class Bestellung {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer kunden_ID;
     private LocalDate datum;    
