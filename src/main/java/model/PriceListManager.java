@@ -29,7 +29,7 @@ public class PriceListManager {
             abkuerzung = "S";
         }       
         
-        try (BufferedReader br = new BufferedReader(new FileReader("PreisListe.csv"))){
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))){
                 String line;            
             while ((line = br.readLine()) != null) {  
                 String[] values = line.split(";'"); 
@@ -56,7 +56,7 @@ public class PriceListManager {
             abkuerzung = "HL";
         }
                 
-        try (BufferedReader br = new BufferedReader(new FileReader("PreisListe.csv"))){
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))){
                 String line;            
             while ((line = br.readLine()) != null) {  
                 String[] values = line.split(";'"); 

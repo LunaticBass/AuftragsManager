@@ -23,8 +23,7 @@
     <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.197</version>
-            <scope>test</scope>
+            <version>1.4.197</version>            
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -84,7 +83,8 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.4.15.Final</version>
-        </dependency>    
+        </dependency>
+   
 </dependencies>
 
 <build>
@@ -133,7 +133,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>         
             <properties>
-                <db.url>jdbc:mysql://127.0.0.1:3336/kmanager?serverTimezone=Europe/Budapest</db.url>
+                <db.url>jdbc:mysql://127.0.0.1:3336/kmtest?serverTimezone=Europe/Budapest</db.url>
                 <db.user>root</db.user>
                 <db.pass>1234</db.pass>
             </properties>

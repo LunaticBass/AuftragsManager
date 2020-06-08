@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 
 /*
@@ -13,7 +14,7 @@ import javax.persistence.Entity;
  * Artikel Unterklasse, hat weitere Unterklassen
  */
 @Entity
-public abstract class Hose extends Artikel{
+public abstract class Hose extends Artikel implements Serializable{
             
     public Hose(){
     }

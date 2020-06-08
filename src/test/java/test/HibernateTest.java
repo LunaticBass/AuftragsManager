@@ -6,10 +6,12 @@
 package test;
 
 import java.time.LocalDate;
-import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import model.Artikel;
 import model.Bestellung;
 import model.Hose.hosenGroesse;
@@ -20,7 +22,6 @@ import model.Muetze;
 import model.Schal;
 import model.Stirnband;
 import model.Waehrung;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,19 +59,35 @@ public class HibernateTest {
     
     @Before
     public void setUp() {
+        em.getTransaction().begin();
+        
         Kunde k1 = new Kunde("Person1", "Adresse1", "Telefon1");
         Kunde k2 = new Kunde("Person2", "Adresse2", "Telefon2");
         Kunde k3 = new Kunde("Person3", "Adresse3", "Telefon3");
         
+        em.persist(k1);
+        em.persist(k2);
+        em.persist(k3);
+        
+        Bestellung b = new Bestellung();
+        b.setWaehrung(Waehrung.EUR);
+        b.setKunde(k1);
+        b.setVersendet(false);
+        b.setBezahlt(true);
+        b.setRabatt(10);
+        b.setDatum(LocalDate.of(2019, 10, 4));
+        
+        em.persist(b);
+        
         Artikel m = new Muetze();
         m.setGroesse("klein");
         m.setWaehrung(Waehrung.EUR);
-        m.setBestellung_ID(1);
+        m.setBestellung(b);
         
         Artikel s = new Schal();
         s.setGroesse("groß");
-        s.setWaehrung(Waehrung.EUR);
-        s.setBestellung_ID(1);
+        s.setWaehrung(Waehrung.EUR);   
+        s.setBestellung(b);
         
         Artikel sb = new Stirnband();
         sb.setWaehrung(Waehrung.HUF);
@@ -86,24 +103,12 @@ public class HibernateTest {
         h2.setGroesse(hosenGroesse.F.toString());
         h2.setWaehrung(Waehrung.HUF);
         
-        Bestellung b = new Bestellung();
-        b.setWaehrung(Waehrung.EUR);
-        b.setKunden_ID(1);
-        b.setVersendet(false);
-        b.setBezahlt(true);
-        b.setRabatt(10);
-        b.setDatum(LocalDate.of(2019, 10, 4));
-        
-        em.getTransaction().begin();
-        em.persist(k1);
-        em.persist(k2);
-        em.persist(k3);
         em.persist(m);
         em.persist(s);
         em.persist(sb);
         em.persist(h1);
-        em.persist(h2);
-        em.persist(b);
+        em.persist(h2);  
+        
         em.getTransaction().commit();
     }
     
@@ -172,7 +177,12 @@ public class HibernateTest {
         assertTrue("Sollte bezahlt sein", b1.isBezahlt());
         assertFalse("Sollte nicht versendet sein", b1.isVersendet());
         assertEquals("Rabatt stimmt nicht", 10, b1.getRabatt(), 0.001);
-        assertEquals("Datum stimmt nicht", LocalDate.of(2019, 10, 4), b1.getDatum());
+        assertEquals("Datum stimmt nicht", LocalDate.of(2019, 10, 4), b1.getDatum());        
+
+        Query q = em.createQuery("SELECT a FROM Artikel a WHERE a.bestellung.id = 1");
+        
+        List<Artikel> artikelListe = q.getResultList();
+         assertEquals("Sollte 2 Artikel enthalten", 2, artikelListe.size());        
     }
 
   

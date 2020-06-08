@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -24,7 +26,11 @@ public abstract class Artikel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
-    protected Integer bestellung_ID;
+    
+    @ManyToOne
+    @JoinColumn(name="bestellung_ID", referencedColumnName = "id")
+    protected Bestellung bestellung;    
+
     protected String name;
     protected String groesse;
     protected String anmerkung;
@@ -32,8 +38,7 @@ public abstract class Artikel {
 
     public Artikel(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
             String anmerkung){
-        this.id = id;
-        this.bestellung_ID = bestellung_ID;        
+        this.id = id;       
         this.groesse = groesse;
         this.waehrung = waehrung;
         this.anmerkung = anmerkung;        
@@ -50,10 +55,6 @@ public abstract class Artikel {
         this.id = id;
     }
 
-    public void setBestellung_ID(Integer bestellung_ID) {
-        this.bestellung_ID = bestellung_ID;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -64,10 +65,6 @@ public abstract class Artikel {
     
     public Integer getId() {
         return id;
-    }
-
-    public Integer getBestellung_ID() {
-        return bestellung_ID;
     }
 
     public String getName() {
@@ -93,6 +90,15 @@ public abstract class Artikel {
     public String getAnmerkung() {
         return anmerkung;
     }   
+
+    public void setBestellung(Bestellung bestellung) {
+        this.bestellung = bestellung;
+    }
+
+    public Bestellung getBestellung() {
+        return bestellung;
+    }
+    
     
     @Override
     public String toString(){

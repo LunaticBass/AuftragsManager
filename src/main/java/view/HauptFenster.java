@@ -8,22 +8,13 @@ package view;
 import view.listeners.ArtikelListener;
 import view.listeners.BestellungListener;
 import view.listeners.KundenListener;
-import database.ConnectionConfig;
-import database.BestellungRepositoryJDBC;
-import database.ArtikelRepositoryJDBC;
-import database.KundenRepositoryJDBC;
+import database.dao.jpa.*;
 import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.FileHandler;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import model.Bestellung;
 import model.Artikel;
 import model.Kunde;
@@ -36,111 +27,81 @@ import model.Kunde;
 public class HauptFenster extends javax.swing.JFrame {
     private KundenPanel kundenPanel;
     private BestellungPanel bestellungPanel;
-    private KundenRepositoryJDBC kundenRep;
-    private BestellungRepositoryJDBC bestellungRep;
-    private ArtikelRepositoryJDBC artikelRep;
+    private KundenRepositoryJPA kundenRep;
+    private BestellungRepositoryJPA bestellungRep;
+    private ArtikelRepositoryJPA artikelRep;
    
     /**
      * Creates new form HauptFenster
      */
     public HauptFenster() {        
        
-        try {
-            Connection conn = ConnectionConfig.getConnection();
-            kundenRep = new KundenRepositoryJDBC(conn);
-            bestellungRep = new BestellungRepositoryJDBC(conn);
-            artikelRep = new ArtikelRepositoryJDBC(conn);
-            
-            List<Bestellung> orderList = alleBestellungenLaden();
-            List<Kunde> customerList = kundenListeLaden();            
-                    
-            kundenPanel = new KundenPanel(customerList);
-            bestellungPanel = new BestellungPanel(orderList, customerList);
-            
-                        
-            initComponents();
-            setLocationRelativeTo(null);
-            
-            getContentPane().add(kundenPanel, "fenster");
-            getContentPane().add(bestellungPanel, "fenster2");
-    
-            /** Listener setup */
-            kundenPanel.setKundenListener(new KundenListener() {
-                public void KundeWeitergegeben(Kunde kunde){                                           
-                        saveKunde(kunde);                    
-                }
-                
-                public void deleteSelected(int id){
-                    deleteKunde(id);
-                }
-            });
-            
-            kundenPanel.setBestellungListener(new BestellungListener(){
-                public void bestellungWeitergegeben(Bestellung bestellung){
-                    saveBestellung(bestellung);                    
-                }
-                
-                public void deleteSelected(int id){
-                    deleteBestellung(id);
-                }
-            });
-            
-            kundenPanel.setArtikelListener(new ArtikelListener(){
-                public void artikelListWeitergegeben(List<Artikel> lista){
-                    saveArtikelList(lista);
-                }
-                
-                public List<Artikel> bestellung_IDArtikel(Integer order_ID){
-                    return null;
-                }
-            });
-            
-            bestellungPanel.setBestellungListener(new BestellungListener(){
-                public void bestellungWeitergegeben(Bestellung bestellung){
-                    saveBestellung(bestellung);                    
-                }
-                
-                public void deleteSelected(int id){
-                    deleteBestellung(id);
-                }                    
-            });
-            
-            bestellungPanel.setArtikelListener(new ArtikelListener(){
-                public void artikelListWeitergegeben(List<Artikel> lista){
-                    saveArtikelList(lista);
-                }
-
-                public List<Artikel> bestellung_IDArtikel(Integer order_ID){
-                    return artikelListeDerBestellung(order_ID);
-                }
-            });
-            
-            this.addWindowListener(new WindowAdapter(){
-                @Override
-                public void windowClosing(WindowEvent e){
-                    super.windowClosing(e);                  
-                    try {
-                        kundenRep.close();
-                        bestellungRep.close();
-                        artikelRep.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-                    }                    
-                }
-            });
-            
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            Logger logger = Logger.getLogger(ConnectionConfig.class.getName());
-            try {                                          
-                FileHandler fh = new FileHandler("logger.log");
-                fh.setFormatter(new SimpleFormatter());
-                logger.addHandler(fh);
-                logger.log(Level.SEVERE, null, ex);
-            } catch (IOException ex1) {
-                logger.log(Level.SEVERE, null, ex1);
+        kundenRep = new KundenRepositoryJPA();
+        bestellungRep = new BestellungRepositoryJPA();
+        artikelRep = new ArtikelRepositoryJPA();
+        List<Bestellung> orderList = alleBestellungenLaden();
+        List<Kunde> customerList = kundenListeLaden();
+        kundenPanel = new KundenPanel(customerList);
+        bestellungPanel = new BestellungPanel(orderList, customerList);
+        initComponents();
+        setLocationRelativeTo(null);
+        getContentPane().add(kundenPanel, "fenster");
+        getContentPane().add(bestellungPanel, "fenster2");
+        /** Listener setup */
+        kundenPanel.setKundenListener(new KundenListener() {
+            public void KundeWeitergegeben(Kunde kunde){
+                saveKunde(kunde);
             }
-        }
+            
+            public void deleteSelected(int id){
+                deleteKunde(id);
+            }
+        });
+        kundenPanel.setBestellungListener(new BestellungListener(){
+            public void bestellungWeitergegeben(Bestellung bestellung){
+                saveBestellung(bestellung);
+            }
+            
+            public void deleteSelected(int id){
+                deleteBestellung(id);
+            }
+        });
+        kundenPanel.setArtikelListener(new ArtikelListener(){
+            public void artikelListWeitergegeben(List<Artikel> lista){
+                saveArtikelList(lista);
+            }
+            
+            public List<Artikel> bestellung_IDArtikel(Integer order_ID){
+                return null;
+            }
+        });
+        bestellungPanel.setBestellungListener(new BestellungListener(){
+            public void bestellungWeitergegeben(Bestellung bestellung){
+                saveBestellung(bestellung);
+            }
+            
+            public void deleteSelected(int id){
+                deleteBestellung(id);
+            }
+        });
+        bestellungPanel.setArtikelListener(new ArtikelListener(){
+            public void artikelListWeitergegeben(List<Artikel> lista){
+                saveArtikelList(lista);
+            }
+            
+            public List<Artikel> bestellung_IDArtikel(Integer order_ID){
+                return artikelListeDerBestellung(order_ID);
+            }
+        });
+        this.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e){
+                super.windowClosing(e);
+                kundenRep.close();
+                bestellungRep.close();
+                artikelRep.close();
+            }
+        });
         
     }
 
@@ -307,97 +268,59 @@ public class HauptFenster extends javax.swing.JFrame {
 /** eigene Methode */
     /** Kundenliste von der Datenbank laden */
     private List<Kunde> kundenListeLaden(){
-        List<Kunde> list = new ArrayList<>();
-        try {
-            list = kundenRep.findAll();
-            return list;
-        }   catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return list;
+        List<Kunde> list = new ArrayList<>();        
+        list = kundenRep.findAll();
+        return list;          
     }
     
     /** Kunde in die Datenbank speichern und Tabelle neu laden */
     private void saveKunde(Kunde kunde){
-        try {                        
-            kundenRep.save(kunde);
-            kundenPanel.reloadList(kundenRep.findAll());
-            bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
-        } catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        kundenRep.save(kunde);
+        kundenPanel.reloadList(kundenRep.findAll());
+        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
     }
     
     /** Kunde von der Datenbank löschen, inkl. alle Bestellungen und Artikel, dann Tabelle neu laden */
     private void deleteKunde(int id){
-        try {
-            kundenRep.delete(id);
-            
-            kundenPanel.reloadList(kundenRep.findAll());
-            bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
-        } catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        kundenRep.delete(id);
+        kundenPanel.reloadList(kundenRep.findAll());
+        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
     }
     
     /** alle Bestellungen von der Datenbak laden */
     private List<Bestellung> alleBestellungenLaden(){
         List<Bestellung> list = new ArrayList<>();
-        try {
-            list = bestellungRep.findAll();
-            return list;
-        }   catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        list = bestellungRep.findAll();
         return list;
     }
     
     /** Bestellung in die Datenbank speichern, dann tabelle neu laden */
     public void saveBestellung(Bestellung bestellung){
-        try {                        
-            bestellungRep.save(bestellung);
-            bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
-        } catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        bestellungRep.save(bestellung);        
+        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
     }
 
     /** bestellung von der Datenbank löschen, inkl. alle Artikel, dann Tabelle neu laden */
     public void deleteBestellung(int id){
-        try { 
-            bestellungRep.delete(id);            
-            bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
-        } catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        bestellungRep.delete(id);
+        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
     }
         
     /** Artikelliste in die Datenbank speichern, davor Artikel in der Datenbank löschen */     
     public void saveArtikelList(List<Artikel> list){
-        try{
-            int order_ID = this.bestellungRep.getLastID();
-            
-            artikelRep.deleteAll(order_ID);
-            for (Artikel t : list){
-                t.setBestellung_ID(order_ID);
-                t.setId(null);
-                artikelRep.save(t);
-            }
-        }catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }       
+//        int order_ID = this.bestellungRep.getLastID();
+//        artikelRep.delete(order_ID);
+//        for (Artikel t : list){
+//            t.setBestellung_ID(order_ID);
+//            t.setId(null);
+//            artikelRep.save(t);
+//        }       
     }
     
     /** Artikelliste von der Datenbank laden für die im Parameter genannte Bestellung */
-    public List<Artikel> artikelListeDerBestellung(Integer order_ID){
-        List<Artikel> list = new ArrayList<>();
-        try{
-            list = artikelRep.findByOrder_ID(order_ID);
-            return list;
-        }catch (SQLException ex) {
-            Logger.getLogger(HauptFenster.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return list;
+    public List<Artikel> artikelListeDerBestellung(Integer order_ID){        
+        Bestellung b = bestellungRep.findOne(order_ID);        
+        return b.getArtikelListe();
     }   
         
     /**

@@ -5,11 +5,19 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -19,24 +27,31 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="bestellung")
-public class Bestellung {
+public class Bestellung implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer kunden_ID;
+    
+    @ManyToOne
+    @JoinColumn(name="kunden_ID", referencedColumnName = "id")
+    private Kunde kunde;
+   
     private LocalDate datum;    
     private double rabatt;
     private double versandkosten;
     private double endsumme;
     private Waehrung waehrung;
     private boolean bezahlt;    
-    private boolean versendet;    
+    private boolean versendet;
+    
+    @OneToMany(mappedBy="bestellung", fetch = FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Artikel> artikelListe = new ArrayList<>();
 
-    public Bestellung(Integer id, Integer kunden_ID, LocalDate datum, double rabatt, 
+    public Bestellung(Integer id, Kunde kunde, LocalDate datum, double rabatt, 
             double versandkosten, double endsumme, Waehrung waehrung, 
             boolean bezahlt, boolean versendet){
         this.id = id;
-        this.kunden_ID = kunden_ID;
+        this.kunde = kunde;
         this.datum = datum;        
         this.rabatt = rabatt;
         this.versandkosten = versandkosten;
@@ -52,11 +67,7 @@ public class Bestellung {
     
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public void setKunden_ID(Integer kunden_ID) {
-        this.kunden_ID = kunden_ID;
-    }
+    }   
 
     public void setEndsumme(double endsumme) {
         this.endsumme = endsumme;
@@ -79,7 +90,7 @@ public class Bestellung {
     }
 
     public Integer getKunden_ID() {
-        return kunden_ID;
+        return kunde.getId();
     }
 
     public double getEndsumme() {
@@ -121,4 +132,21 @@ public class Bestellung {
     public double getVersandkosten() {
         return versandkosten;
     }
+
+    public void setArtikelListe(List<Artikel> artikelListe) {
+        this.artikelListe = artikelListe;
+    }
+
+    public List<Artikel> getArtikelListe() {
+        return artikelListe;
+    }    
+
+    public void setKunde(Kunde kunde) {
+        this.kunde = kunde;
+    }
+
+    public Kunde getKunde() {
+        return kunde;
+    }   
+    
 }
