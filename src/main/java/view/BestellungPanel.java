@@ -300,7 +300,8 @@ public class BestellungPanel extends javax.swing.JPanel {
             }
 
             if (dialog.getArtikelList().isPresent()){
-                        List<Artikel> termekLista = dialog.getArtikelList().get();
+//                        List<Artikel> termekLista = dialog.getArtikelList().get();
+                        List<Artikel> termekLista = dialog.getBestellung().get().getArtikelListe();
                         artikelListener.artikelListWeitergegeben(termekLista);
             }            
         }

@@ -7,7 +7,6 @@ package view;
 
 import java.util.Optional;
 import model.Kunde;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -92,7 +91,7 @@ public class KundeNeuAendern extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setText("Kundendaten");
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kepek/user.png"))); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/user.png"))); // NOI18N
         jLabel6.setText("jLabel6");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -185,7 +184,7 @@ public class KundeNeuAendern extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okBtn)
                     .addComponent(cancelBtn))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();

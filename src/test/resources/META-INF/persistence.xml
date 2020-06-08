@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence                                  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="kmanager-test" transaction-type="RESOURCE_LOCAL">
+    <!-- add classes -->
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>model.Artikel</class>
+    <class>model.Bestellung</class>
+    <class>model.Kunde</class>
+    <class>model.Muetze</class>
+    <class>model.Schal</class>
+    <class>model.Hose</class>
+    <class>model.HoseKurz</class>
+    <class>model.HoseLang</class>
+    <class>model.Stirnband</class>
+    <properties>
+      <!-- Configuring JDBC properties -->
+      <!-- Hibernate properties -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test"/>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <!-- Hibernate properties -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+      <property name="hibernate.format_sql" value="false"/>
+      <property name="hibernate.show_sql" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>

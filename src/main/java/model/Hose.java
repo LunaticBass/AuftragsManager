@@ -1,5 +1,8 @@
 package model;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,7 +13,8 @@ package model;
  *
  * Artikel Unterklasse, hat weitere Unterklassen
  */
-public abstract class Hose extends Artikel{
+@Entity
+public abstract class Hose extends Artikel implements Serializable{
             
     public Hose(){
     }

@@ -6,6 +6,7 @@
 package model;
 
 import java.util.Map;
+import javax.persistence.Entity;
 
 /**
  *
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 
 /** Unterklasse der Klasse Hose */
+@Entity
 public class HoseKurz extends Hose{    
     private static Map<Waehrung, Map<hosenGroesse, Double>> PRICELIST = 
             PriceListManager.readHose("PreisListe.csv", HoseKurz.class);

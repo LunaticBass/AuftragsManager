@@ -62,10 +62,10 @@ public class BestellungTableModel extends AbstractTableModel{
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Bestellung bestellung = bestList.get(rowIndex);
-    
+        
         switch (columnIndex){
             case 0:
-                return bestellung.getKunden_ID();
+                return bestellung.getKunde().getId();
             case 1:
                 return bestellung.getEndsumme();
             case 2:

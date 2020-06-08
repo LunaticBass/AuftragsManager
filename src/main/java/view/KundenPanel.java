@@ -212,6 +212,7 @@ public class KundenPanel extends javax.swing.JPanel {
                 dialog.setVisible(true); 
                 if (dialog.getBestellung().isPresent()){
                     Bestellung b = dialog.getBestellung().get();
+                    System.out.println("kapott " + b.getKunde().getId());
                     bestellungListener.bestellungWeitergegeben(b);                    
                 }
                 if (dialog.getArtikelList().isPresent()){

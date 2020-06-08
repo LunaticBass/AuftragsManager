@@ -12,14 +12,35 @@
         <itext.version>RELEASE</itext.version>        
     </properties>
 
-<dependencies>   
-    <!-- https://mvnrepository.com/artifact/junit/junit -->
+<dependencies>  
+    <!-- testing --> 
     <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.13</version>
         <scope>test</scope>
     </dependency>
+    <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>            
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency> 
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.1</version>
+        </dependency>
     <!-- add all iText 7 modules -->
     <dependency>
         <groupId>com.itextpdf</groupId>
@@ -47,7 +68,23 @@
        <groupId>org.slf4j</groupId>
        <artifactId>slf4j-log4j12</artifactId>
        <version>1.7.5</version>
-   </dependency>    
+   </dependency>
+   <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.15.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>5.4.15.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>5.4.15.Final</version>
+        </dependency>
+   
 </dependencies>
 
 <build>
@@ -75,6 +112,11 @@
                 </execution>
             </executions>
         </plugin>
+        <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19</version>
+            </plugin>
     </plugins>
     <resources>
         <resource>
@@ -91,7 +133,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>         
             <properties>
-                <db.url>jdbc:mysql://127.0.0.1:3336/kmanager?serverTimezone=Europe/Budapest</db.url>
+                <db.url>jdbc:mysql://127.0.0.1:3336/kmtest?serverTimezone=Europe/Budapest</db.url>
                 <db.user>root</db.user>
                 <db.pass>1234</db.pass>
             </properties>

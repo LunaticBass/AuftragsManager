@@ -30,8 +30,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     private boolean ok;
 //Bestellung
     private Kunde kunde;
-    private Integer id;
-    private Integer kunde_ID;
+    private Integer id;    
     private LocalDate datum;    
     private double rabatt;
     private double versandkosten;
@@ -55,8 +54,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         artikelJList.setModel(listModel);
         
         this.waehrung = waehrung;
-        this.kunde = kunde;
-        this.kunde_ID = kunde.getId();
+        this.kunde = kunde;        
         this.artikelList = new ArrayList<>();
        
         kundeLb.setText(this.kunde.getId() + ". " + this.kunde.getName());
@@ -75,8 +73,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         
         artikelJList.setModel(listModel);       
                
-        this.kunde = kunde;
-        this.kunde_ID = kunde.getId();
+        this.kunde = kunde;        
         kundeLb.setText(this.kunde.getId() + ". " + this.kunde.getName());        
         
         setTitle("Bestellung ändern");
@@ -105,7 +102,8 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         }
         jDatePicker.getModel().setSelected(true);
 //  Liste mit Artikelliste auffüllen
-        this.artikelList = artikelList;
+//        this.artikelList = artikelList;
+        this.artikelList = bestellung.getArtikelListe();        
         for (Artikel t : artikelList){
             listModel.addElement(t);
         } 
@@ -231,7 +229,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         artikelJList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(artikelJList);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kepek/jeans.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/jeans.png"))); // NOI18N
         jLabel5.setText("jLabel5");
 
         aendernBtn.setText("Ändern");
@@ -626,7 +624,6 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     }//GEN-LAST:event_quittungBtnActionPerformed
 
     private void aendernBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aendernBtnActionPerformed
-//        talan nem is kell
         int selectedIndex = artikelJList.getSelectedIndex();
         if (selectedIndex != -1){       
             Artikel ausgewaehlt = artikelJList.getSelectedValue();   
@@ -649,8 +646,15 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     /** Wiedergabe eines Bestellung Objekts, wenn Fenster mit OK geschlossen*/
     public Optional<Bestellung> getBestellung(){
         if (this.ok){
-            Bestellung bestellung = new Bestellung(id, kunde_ID, datum, rabatt, 
-                    versandkosten, endsumme, waehrung, bezahlt, versendet);
+            Bestellung bestellung = new Bestellung(id, kunde, datum, rabatt, 
+                    versandkosten, endsumme, waehrung, bezahlt, versendet);            
+            
+            for (Artikel a : artikelList){
+                a.setBestellung(bestellung);
+            }
+            
+            bestellung.setArtikelListe(artikelList);
+            
             return Optional.of(bestellung);
         }else{
             return Optional.empty();

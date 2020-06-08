@@ -1,10 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Map;
-
+import javax.persistence.Entity;
 
 /** Unterklasse der Klasse Artikel */
-public class Schal extends Artikel{
+@Entity
+public class Schal extends Artikel implements Serializable{
     private static Map<Waehrung, Double> PRICELIST = 
             PriceListManager.readMützeSchalStirnband("PreisListe.csv", Schal.class);   
  
