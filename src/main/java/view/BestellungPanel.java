@@ -10,7 +10,6 @@ import view.models.BestellungTableModel;
 import view.models.EndsummeRenderer;
 import view.models.NameComparator;
 import view.listeners.BestellungListener;
-import view.listeners.ArtikelListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +32,6 @@ import model.Kunde;
  */
 public class BestellungPanel extends javax.swing.JPanel {
     private BestellungListener bestellungListener;
-    private ArtikelListener artikelListener;
     private List<Bestellung> bestList;
     private List<Kunde> kundeList;
     private Bestellung selectedBestellung;
@@ -278,13 +276,13 @@ public class BestellungPanel extends javax.swing.JPanel {
             
             //   gewählter Kunde
             for (Kunde kunde : kundeList){
-                if (kunde.getId().equals(selectedBestellung.getKunden_ID())){
+                if (kunde.getId().equals(selectedBestellung.getKunde().getId())){
                     this.selectedKunde = kunde;
                 }
             }
             
             //   Artikelliste der gewählter Bestellung
-            this.selectedArtikelList = artikelListener.bestellung_IDArtikel(this.selectedBestellung.getId());
+            this.selectedArtikelList = this.selectedBestellung.getArtikelListe();
             
             BestellungNeuAendern dialog = new BestellungNeuAendern(new javax.swing.JFrame(), 
                     selectedKunde, selectedBestellung, selectedArtikelList);
@@ -297,13 +295,7 @@ public class BestellungPanel extends javax.swing.JPanel {
             if (dialog.getBestellung().isPresent()){
                 Bestellung m = dialog.getBestellung().get();
                 bestellungListener.bestellungWeitergegeben(m);
-            }
-
-            if (dialog.getArtikelList().isPresent()){
-//                        List<Artikel> termekLista = dialog.getArtikelList().get();
-                        List<Artikel> termekLista = dialog.getBestellung().get().getArtikelListe();
-                        artikelListener.artikelListWeitergegeben(termekLista);
-            }            
+            }           
         }
         gesamtUmsatz();
     }//GEN-LAST:event_aendernBtnActionPerformed
@@ -323,9 +315,6 @@ public class BestellungPanel extends javax.swing.JPanel {
         this.bestellungListener = listener;
     }
     
-    public void setArtikelListener(ArtikelListener listener){
-        this.artikelListener = listener;
-    }
     
     /** Liste mit ausgewählten Kundendaten als .csv Datei speichern */
     public void speichernAlsDatei(List<Kunde> list, String filename){

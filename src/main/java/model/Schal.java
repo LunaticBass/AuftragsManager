@@ -14,16 +14,15 @@ public class Schal extends Artikel implements Serializable{
         this.name = "Schal";
     }
     
-    public Schal(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
-            String anmerkung){
-        super(id, bestellung_ID, groesse, waehrung, anmerkung);
+    public Schal(Integer id, Bestellung bestellung, String groesse, String anmerkung){
+        super(id, bestellung, groesse, anmerkung);
         this.name = "Schal";        
     }
     
     /** anhand der Währung wird der Preis widergegeben */    
     @Override
     public double getPreis(){       
-        return PRICELIST.get(this.waehrung);       
+        return PRICELIST.get(bestellung.getWaehrung());       
     }     
     
 }

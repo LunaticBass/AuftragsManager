@@ -24,14 +24,13 @@ public class HoseLang extends Hose{
         this.name = "Hose lang";
     }
     
-    public HoseLang(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
-            String anmerkung){
-        super(id, bestellung_ID, groesse, waehrung, anmerkung);
+    public HoseLang(Integer id, Bestellung bestellung, String groesse,String anmerkung){
+        super(id, bestellung, groesse, anmerkung);
         this.name = "Hose lang";
     }
     
     @Override
     public double getPreis(){      
-        return PRICELIST.get(this.waehrung).get(hosenGroesse.valueOf(this.groesse));
+        return PRICELIST.get(bestellung.getWaehrung()).get(hosenGroesse.valueOf(this.groesse));
     }
 }

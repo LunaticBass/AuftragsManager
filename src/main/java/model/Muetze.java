@@ -13,16 +13,15 @@ public class Muetze extends Artikel{
         this.name = "Mütze";
     }
     
-    public Muetze(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
-            String anmerkung){
-        super(id, bestellung_ID, groesse, waehrung, anmerkung);
+    public Muetze(Integer id, Bestellung bestellung, String groesse, String anmerkung){
+        super(id, bestellung, groesse, anmerkung);
         this.name = "Mütze";
     }
     
     /** anhand der Währung wird der Preis widergegeben */    
     @Override
     public double getPreis(){        
-        return PRICELIST.get(this.waehrung);       
+        return PRICELIST.get(bestellung.getWaehrung());       
     }   
     
 }

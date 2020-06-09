@@ -6,22 +6,13 @@
 package test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import model.Artikel;
-import model.Bestellung;
+import model.*;
 import model.Hose.hosenGroesse;
-import model.HoseKurz;
-import model.HoseLang;
-import model.Kunde;
-import model.Muetze;
-import model.Schal;
-import model.Stirnband;
-import model.Waehrung;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -45,7 +36,7 @@ public class HibernateTest {
         System.out.println("init() started.");
         try {
             emf = Persistence.createEntityManagerFactory("kmanager-test");
-            em = emf.createEntityManager();
+            em = emf.createEntityManager();           
         } catch (Throwable th) {
             th.printStackTrace();
         } finally {
@@ -80,28 +71,26 @@ public class HibernateTest {
         em.persist(b);
         
         Artikel m = new Muetze();
-        m.setGroesse("klein");
-        m.setWaehrung(Waehrung.EUR);
+        m.setGroesse("klein");       
         m.setBestellung(b);
         
         Artikel s = new Schal();
-        s.setGroesse("groß");
-        s.setWaehrung(Waehrung.EUR);   
+        s.setGroesse("groß");           
         s.setBestellung(b);
         
-        Artikel sb = new Stirnband();
-        sb.setWaehrung(Waehrung.HUF);
+        Artikel sb = new Stirnband();        
         sb.setGroesse("mittel");
+        sb.setBestellung(b);
         
         Artikel h1 = new HoseKurz();
-        h1.setAnmerkung("etwas dünner");
-        h1.setWaehrung(Waehrung.EUR);
+        h1.setAnmerkung("etwas dünner");        
         h1.setGroesse(hosenGroesse.D.toString());
+        h1.setBestellung(b);
         
         Artikel h2 = new HoseLang();
         h2.setAnmerkung("länger");
-        h2.setGroesse(hosenGroesse.F.toString());
-        h2.setWaehrung(Waehrung.HUF);
+        h2.setGroesse(hosenGroesse.F.toString());     
+        h2.setBestellung(b);
         
         em.persist(m);
         em.persist(s);
@@ -155,7 +144,7 @@ public class HibernateTest {
         
         assertEquals("Falscher Name", "Stirnband", a3.getName());
         assertEquals("Falsche Größe", "mittel", a3.getGroesse());        
-        assertEquals("Falscher Preis", 3000, a3.getPreis(), 0.001);
+        assertEquals("Falscher Preis", 9, a3.getPreis(), 0.001);
         
         assertEquals("Falscher Name", "Hose kurz", a4.getName());
         assertEquals("Falsche Größe", "D", a4.getGroesse());
@@ -164,7 +153,7 @@ public class HibernateTest {
         
         assertEquals("Falscher Name", "Hose lang", a5.getName());
         assertEquals("Falsche Größe", "F", a5.getGroesse());
-        assertEquals("Falscher Preis", 4400, a5.getPreis(), 0.001);
+        assertEquals("Falscher Preis", 13, a5.getPreis(), 0.001);
         assertEquals("Anmerkung stimmt nicht", "länger", a5.getAnmerkung());
     }
     
@@ -172,7 +161,7 @@ public class HibernateTest {
     public void abfragenBestellung(){
         Bestellung b1 = em.getReference(Bestellung.class, 1);
         
-        assertEquals("kunden_ID stimmt nicht", Integer.valueOf(1), b1.getKunden_ID());
+        assertEquals("kunden_ID stimmt nicht", Integer.valueOf(1), b1.getKunde().getId());
         assertEquals("Währung stimmt nicht", Waehrung.EUR, b1.getWaehrung());
         assertTrue("Sollte bezahlt sein", b1.isBezahlt());
         assertFalse("Sollte nicht versendet sein", b1.isVersendet());
@@ -182,7 +171,7 @@ public class HibernateTest {
         Query q = em.createQuery("SELECT a FROM Artikel a WHERE a.bestellung.id = 1");
         
         List<Artikel> artikelListe = q.getResultList();
-         assertEquals("Sollte 2 Artikel enthalten", 2, artikelListe.size());        
+         assertEquals("Sollte 5 Artikel enthalten", 5, artikelListe.size());        
     }
 
   

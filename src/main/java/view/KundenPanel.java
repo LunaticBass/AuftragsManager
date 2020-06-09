@@ -6,7 +6,6 @@
 package view;
 
 import view.models.KundenTableModel;
-import view.listeners.ArtikelListener;
 import view.listeners.KundenListener;
 import view.listeners.BestellungListener;
 import java.util.List;
@@ -16,7 +15,6 @@ import javax.swing.table.TableColumnModel;
 import model.Bestellung;
 import model.Kunde;
 import model.Waehrung;
-import model.Artikel;
 
 /**
  *
@@ -25,7 +23,6 @@ import model.Artikel;
 public class KundenPanel extends javax.swing.JPanel {
     private KundenListener kundenListener;
     private BestellungListener bestellungListener;
-    private ArtikelListener artikelListener;
     private List<Kunde> kundenListe;    
     private KundenTableModel myTableModel;
     
@@ -211,14 +208,9 @@ public class KundenPanel extends javax.swing.JPanel {
                 BestellungNeuAendern dialog = new BestellungNeuAendern(new javax.swing.JFrame(), ausgewaehlt, waehrung);
                 dialog.setVisible(true); 
                 if (dialog.getBestellung().isPresent()){
-                    Bestellung b = dialog.getBestellung().get();
-                    System.out.println("kapott " + b.getKunde().getId());
+                    Bestellung b = dialog.getBestellung().get();                    
                     bestellungListener.bestellungWeitergegeben(b);                    
-                }
-                if (dialog.getArtikelList().isPresent()){
-                    List<Artikel> itemList = dialog.getArtikelList().get();
-                    artikelListener.artikelListWeitergegeben(itemList);
-                }
+                }                
             }
         }
     }//GEN-LAST:event_neueBestBtnActionPerformed
@@ -229,11 +221,8 @@ public class KundenPanel extends javax.swing.JPanel {
     
     public void setBestellungListener(BestellungListener listener){
         this.bestellungListener = listener;
-    }
-    
-    public void setArtikelListener(ArtikelListener listener){
-        this.artikelListener = listener;
-    }
+    }   
+
     
     /** Kunden aus der Liste anzeigen */
     public void reloadList(List<Kunde> list){

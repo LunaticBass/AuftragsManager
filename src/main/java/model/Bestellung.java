@@ -89,10 +89,6 @@ public class Bestellung implements Serializable {
         return id;
     }
 
-    public Integer getKunden_ID() {
-        return kunde.getId();
-    }
-
     public double getEndsumme() {
         return endsumme;
     }
@@ -114,11 +110,15 @@ public class Bestellung implements Serializable {
     }
    
     public void setRabatt(double rabatt) {
+        this.endsumme += this.rabatt;
         this.rabatt = rabatt;
+        this.endsumme -= rabatt;
     }
 
     public void setVersandkosten(double versandkosten) {
+        this.endsumme -= this.versandkosten;
         this.versandkosten = versandkosten;
+        this.endsumme += versandkosten;
     }
 
     public LocalDate getDatum() {

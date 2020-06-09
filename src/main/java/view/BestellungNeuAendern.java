@@ -29,15 +29,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     private DefaultListModel<Artikel> listModel = new DefaultListModel<>();
     private boolean ok;
 //Bestellung
-    private Kunde kunde;
-    private Integer id;    
-    private LocalDate datum;    
-    private double rabatt;
-    private double versandkosten;
-    private double endsumme = 0;
-    private boolean bezahlt;    
-    private boolean versendet;
-    private Waehrung waehrung;
+    private Bestellung bestellung = new Bestellung();  
 //Artikelliste
     private List<Artikel> artikelList;
     
@@ -53,15 +45,15 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         
         artikelJList.setModel(listModel);
         
-        this.waehrung = waehrung;
-        this.kunde = kunde;        
+        bestellung.setWaehrung(waehrung);
+        bestellung.setKunde(kunde);
         this.artikelList = new ArrayList<>();
        
-        kundeLb.setText(this.kunde.getId() + ". " + this.kunde.getName());
+        kundeLb.setText(bestellung.getKunde().getId() + ". " + bestellung.getKunde().getName());
         waehrungLb.setText(waehrung.toString());
         waehrungLb1.setText(waehrung.toString());
         waehrungLb2.setText(waehrung.toString());
-        endsummeLb.setText(String.format("%,.2f", endsumme));
+        endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
     }
     
 /**    Bestellung ändern */
@@ -71,38 +63,31 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         initComponents();
         setLocation(200, 100);
         
-        artikelJList.setModel(listModel);       
-               
-        this.kunde = kunde;        
-        kundeLb.setText(this.kunde.getId() + ". " + this.kunde.getName());        
+        artikelJList.setModel(listModel);                
+     
+        this.bestellung = bestellung;
+        kundeLb.setText(bestellung.getKunde().getId() + ". " + bestellung.getKunde().getName());        
         
         setTitle("Bestellung ändern");
         
-// Felder mit gegebenen Daten ausfüllen       
-        this.id = bestellung.getId();
-        this.datum = bestellung.getDatum();
-     
-        this.rabatt = bestellung.getRabatt();
-        this.versandkosten = bestellung.getVersandkosten();
-        this.waehrung = bestellung.getWaehrung();
-        this.endsumme = bestellung.getEndsumme();            
+// Felder mit gegebenen Daten ausfüllen                   
         this.bezahltCb.setSelected(bestellung.isBezahlt());        
        
         this.versendetCb.setSelected(bestellung.isVersendet());
         this.endsummeLb.setText(String.valueOf(bestellung.getEndsumme()));
-        waehrungLb.setText(waehrung.toString());
-        waehrungLb1.setText(waehrung.toString());
-        waehrungLb2.setText(waehrung.toString());
-        endsummeLb.setText(String.format("%,.2f", endsumme));       
-        rabattLb.setText(String.format("%,.2f", rabatt));
-        versandkostenLb.setText(String.format("%,.2f", versandkosten)); 
+        waehrungLb.setText(bestellung.getWaehrung().toString());
+        waehrungLb1.setText(bestellung.getWaehrung().toString());
+        waehrungLb2.setText(bestellung.getWaehrung().toString());
+        endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));       
+        rabattLb.setText(String.format("%,.2f", bestellung.getRabatt()));
+        versandkostenLb.setText(String.format("%,.2f", bestellung.getVersandkosten())); 
         try{        
-            jDatePicker.getModel().setDate(datum.getYear(), datum.getMonthValue()-1, datum.getDayOfMonth());
+            jDatePicker.getModel().setDate(bestellung.getDatum().getYear(), 
+                    bestellung.getDatum().getMonthValue()-1, bestellung.getDatum().getDayOfMonth());
         }catch(NullPointerException e){    
         }
         jDatePicker.getModel().setSelected(true);
 //  Liste mit Artikelliste auffüllen
-//        this.artikelList = artikelList;
         this.artikelList = bestellung.getArtikelListe();        
         for (Artikel t : artikelList){
             listModel.addElement(t);
@@ -140,7 +125,6 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         artikelJList = new javax.swing.JList<>();
         jLabel5 = new javax.swing.JLabel();
-        aendernBtn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         endsummeLb = new javax.swing.JLabel();
@@ -232,13 +216,6 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/jeans.png"))); // NOI18N
         jLabel5.setText("jLabel5");
 
-        aendernBtn.setText("Ändern");
-        aendernBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aendernBtnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -251,9 +228,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(artikelBox, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(114, 114, 114)
-                        .addComponent(aendernBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(205, 205, 205)
                         .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
@@ -270,9 +245,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(aendernBtn)
-                    .addComponent(deleteBtn))
+                .addComponent(deleteBtn)
                 .addContainerGap(8, Short.MAX_VALUE))
         );
 
@@ -490,8 +463,8 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
 
     private void okBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okBtnActionPerformed
         this.ok = true;       
-        this.bezahlt = bezahltCb.isSelected();
-        this.versendet = versendetCb.isSelected();
+        bestellung.setBezahlt(bezahltCb.isSelected());
+        bestellung.setVersendet(versendetCb.isSelected());
         dispose();
     }//GEN-LAST:event_okBtnActionPerformed
 
@@ -550,14 +523,14 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
                         "Anmerkungen", JOptionPane.QUESTION_MESSAGE);
 
                 artikel.setGroesse(groesse);                
-                artikel.setWaehrung(waehrung);
                 artikel.setAnmerkung(anmerkung);
 
                 listModel.addElement(artikel);
+                artikel.setBestellung(bestellung);
                 this.artikelList.add(artikel);
 
-                endsumme += artikel.getPreis();
-                endsummeLb.setText(String.format("%,.2f", endsumme));
+                bestellung.setEndsumme(bestellung.getEndsumme() + artikel.getPreis());
+                endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
             }catch (NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
             }  
@@ -568,8 +541,8 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         int selectedIndex = artikelJList.getSelectedIndex();
         Artikel ausgewaehlt = artikelJList.getSelectedValue();
         if (selectedIndex != -1){
-            endsumme -= ausgewaehlt.getPreis();
-            endsummeLb.setText(String.format("%,.2f", endsumme));
+            bestellung.setEndsumme(bestellung.getEndsumme() - ausgewaehlt.getPreis());            
+            endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
             listModel.removeElement(ausgewaehlt);
             this.artikelList.remove(selectedIndex);
         }
@@ -581,15 +554,12 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void rabattOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rabattOkActionPerformed
-        try{
-            endsumme += rabatt;
+        try{             
             NumberFormat format = NumberFormat.getInstance();
             Number number = format.parse(tfRabatt.getText());
-            this.rabatt = number.doubleValue();
-            
-            rabattLb.setText(String.format(String.format("%,.2f", rabatt)));
-            endsumme -= rabatt;
-            endsummeLb.setText(String.format("%,.2f", endsumme));
+            bestellung.setRabatt(number.doubleValue());   
+            rabattLb.setText(String.format(String.format("%,.2f", bestellung.getRabatt())));
+            endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
         }  
@@ -597,14 +567,14 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
 
     private void versandkostenOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versandkostenOkActionPerformed
         try{
-            endsumme -= versandkosten;
+            bestellung.setEndsumme(bestellung.getEndsumme() - bestellung.getVersandkosten());
             NumberFormat format = NumberFormat.getInstance();
             Number number = format.parse(tfVersandkosten.getText());
-            this.versandkosten = number.doubleValue();
-            
-            versandkostenLb.setText(String.format(String.format("%,.2f", versandkosten)));
-            endsumme += versandkosten;
-            endsummeLb.setText(String.format("%,.2f", endsumme));
+            bestellung.setVersandkosten(number.doubleValue());
+                        
+            versandkostenLb.setText(String.format(String.format("%,.2f", bestellung.getVersandkosten())));
+            bestellung.setEndsumme(bestellung.getEndsumme() + bestellung.getVersandkosten());
+            endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
         } catch (ParseException ex) {
                 JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
         }  
@@ -614,61 +584,26 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         GregorianCalendar selectedDate = (GregorianCalendar) jDatePicker.getModel().getValue();
         LocalDate dateRead = LocalDateTime.ofInstant(selectedDate.toInstant(), selectedDate.getTimeZone().toZoneId()).toLocalDate();
         
-        this.datum = dateRead;
+        bestellung.setDatum(dateRead);
     }//GEN-LAST:event_jDatePickerActionPerformed
 
     private void quittungBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quittungBtnActionPerformed
-        QuittungMaker invoiceFactory = new QuittungMaker(artikelList, waehrung, endsumme, kunde.getName());
+        QuittungMaker invoiceFactory = new QuittungMaker(bestellung.getArtikelListe(), 
+                bestellung.getWaehrung(), bestellung.getEndsumme(), bestellung.getKunde().getName());
         invoiceFactory.makePDF();
         JOptionPane.showMessageDialog(null, "Quittung erstellt");
     }//GEN-LAST:event_quittungBtnActionPerformed
 
-    private void aendernBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aendernBtnActionPerformed
-        int selectedIndex = artikelJList.getSelectedIndex();
-        if (selectedIndex != -1){       
-            Artikel ausgewaehlt = artikelJList.getSelectedValue();   
-
-            try{                                         
-                String anmerkung = (String) JOptionPane.showInputDialog(null, "Anmerkungen zum Artikel:", 
-                        "Anmerkungen", JOptionPane.QUESTION_MESSAGE, null, null, ausgewaehlt.getAnmerkung());                          
-
-                ausgewaehlt.setAnmerkung(anmerkung);
-                listModel.remove(selectedIndex);
-                this.artikelList.remove(selectedIndex);
-                listModel.add(selectedIndex, ausgewaehlt);
-                this.artikelList.add(selectedIndex, ausgewaehlt);            
-            }catch (NumberFormatException e){
-                JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
-            }
-        }        
-    }//GEN-LAST:event_aendernBtnActionPerformed
-
     /** Wiedergabe eines Bestellung Objekts, wenn Fenster mit OK geschlossen*/
     public Optional<Bestellung> getBestellung(){
         if (this.ok){
-            Bestellung bestellung = new Bestellung(id, kunde, datum, rabatt, 
-                    versandkosten, endsumme, waehrung, bezahlt, versendet);            
-            
-            for (Artikel a : artikelList){
-                a.setBestellung(bestellung);
-            }
-            
-            bestellung.setArtikelListe(artikelList);
-            
+            bestellung.setArtikelListe(artikelList);            
             return Optional.of(bestellung);
         }else{
             return Optional.empty();
         }
-    }
+    }    
     
-    /** Wiedergabe einer Artikelliste, wenn Fenster mit OK geschlossen*/
-    public Optional<List<Artikel>> getArtikelList(){
-        if (this.ok){            
-            return Optional.of(this.artikelList);
-        }else{
-            return Optional.empty();
-        }
-    }
     
     /** Wenn versendet, keine Änderungen mehr möglich */
     public void keineAenderungen(){
@@ -731,7 +666,6 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton aendernBtn;
     private javax.swing.JComboBox<String> artikelBox;
     private javax.swing.JList<model.Artikel> artikelJList;
     private javax.swing.JCheckBox bezahltCb;

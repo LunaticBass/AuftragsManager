@@ -33,14 +33,12 @@ public abstract class Artikel {
 
     protected String name;
     protected String groesse;
-    protected String anmerkung;
-    protected Waehrung waehrung;  
+    protected String anmerkung;     
 
-    public Artikel(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
-            String anmerkung){
-        this.id = id;       
-        this.groesse = groesse;
-        this.waehrung = waehrung;
+    public Artikel(Integer id, Bestellung bestellung, String groesse, String anmerkung){
+        this.id = id; 
+        this.bestellung = bestellung;
+        this.groesse = groesse;       
         this.anmerkung = anmerkung;        
     }
     
@@ -73,15 +71,7 @@ public abstract class Artikel {
 
     public String getGroesse() {
         return groesse;
-    }   
-
-    public Waehrung getWaehrung() {
-        return waehrung;
-    }
-
-    public void setWaehrung(Waehrung waehrung) {
-        this.waehrung = waehrung;
-    } 
+    }       
 
     public void setAnmerkung(String anmerkung) {
         this.anmerkung = anmerkung;
@@ -102,7 +92,7 @@ public abstract class Artikel {
     
     @Override
     public String toString(){
-        return String.format("%s, %s, %.2f %s/Stk: %s", name, groesse, getPreis(), waehrung, anmerkung);
+        return String.format("%s, %s, %.2f %s/Stk: %s", name, groesse, getPreis(), bestellung.getWaehrung(), anmerkung);
     }
     
 }

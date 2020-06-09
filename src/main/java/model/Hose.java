@@ -19,9 +19,8 @@ public abstract class Hose extends Artikel implements Serializable{
     public Hose(){
     }
     
-    public Hose(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
-            String anmerkung){
-        super(id, bestellung_ID, groesse, waehrung, anmerkung);
+    public Hose(Integer id, Bestellung bestellung, String groesse, String anmerkung){
+        super(id, bestellung, groesse, anmerkung);
     }
    
     /** anhand Größe und Währung wird der Preis widergegeben */    
@@ -64,7 +63,8 @@ public abstract class Hose extends Artikel implements Serializable{
 
     @Override
     public String toString(){
-        return String.format("%s, %s, %.2f %s/Stk: %s", name, getGroesseInZahlen(), getPreis(), waehrung, anmerkung);
+        return String.format("%s, %s, %.2f %s/Stk: %s", name, getGroesseInZahlen(), 
+                getPreis(), bestellung.getWaehrung(), anmerkung);
     }
    
 }

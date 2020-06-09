@@ -23,14 +23,13 @@ public class HoseKurz extends Hose{
         this.name = "Hose kurz";
     }
     
-    public HoseKurz(Integer id, Integer bestellung_ID, String groesse, Waehrung waehrung, 
-            String anmerkung){
-        super(id, bestellung_ID, groesse, waehrung, anmerkung);
+    public HoseKurz(Integer id, Bestellung bestellung, String groesse, String anmerkung){
+        super(id, bestellung, groesse, anmerkung);
         this.name = "Hose kurz";        
     }
     
     @Override
     public double getPreis(){
-        return PRICELIST.get(this.waehrung).get(hosenGroesse.valueOf(this.groesse));
+        return PRICELIST.get(bestellung.getWaehrung()).get(hosenGroesse.valueOf(this.groesse));
     }
 }

@@ -38,7 +38,6 @@ public class KundenRepositoryJPA implements DAO<Kunde>{
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();        
         em.merge(k);
-//        em.persist(k);
         em.getTransaction().commit();
         em.close();
     }

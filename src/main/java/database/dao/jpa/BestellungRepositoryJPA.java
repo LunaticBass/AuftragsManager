@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import model.Bestellung;
+import model.Kunde;
 
 /**
  *
@@ -55,7 +56,9 @@ public class BestellungRepositoryJPA implements DAO<Bestellung>{
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Bestellung b = em.getReference(Bestellung.class, id);
-        em.remove(b);
+        Kunde k = em.getReference(Kunde.class, b.getKunde().getId());
+        k.getBestellungen().remove(b);
+        em.remove(b);        
         em.getTransaction().commit();
         em.close();
     }

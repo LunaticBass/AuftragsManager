@@ -82,9 +82,9 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.4.15.Final</version>
+            <version>4.3.1.Final</version>
         </dependency>
-   
+    
 </dependencies>
 
 <build>
@@ -147,5 +147,5 @@
             </properties>
         </profile>        
     </profiles>
-    <name>AuftragsManager</name>
+    <name>AuftragsManager</name>    
 </project> 

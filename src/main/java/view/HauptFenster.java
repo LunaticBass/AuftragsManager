@@ -5,7 +5,6 @@
  */
 package view;
 
-import view.listeners.ArtikelListener;
 import view.listeners.BestellungListener;
 import view.listeners.KundenListener;
 import database.dao.jpa.*;
@@ -28,8 +27,7 @@ public class HauptFenster extends javax.swing.JFrame {
     private KundenPanel kundenPanel;
     private BestellungPanel bestellungPanel;
     private KundenRepositoryJPA kundenRep;
-    private BestellungRepositoryJPA bestellungRep;
-    private ArtikelRepositoryJPA artikelRep;
+    private BestellungRepositoryJPA bestellungRep;    
    
     /**
      * Creates new form HauptFenster
@@ -37,8 +35,7 @@ public class HauptFenster extends javax.swing.JFrame {
     public HauptFenster() {        
        
         kundenRep = new KundenRepositoryJPA();
-        bestellungRep = new BestellungRepositoryJPA();
-        artikelRep = new ArtikelRepositoryJPA();
+        bestellungRep = new BestellungRepositoryJPA();        
         List<Bestellung> orderList = alleBestellungenLaden();
         List<Kunde> customerList = kundenListeLaden();
         kundenPanel = new KundenPanel(customerList);
@@ -66,40 +63,23 @@ public class HauptFenster extends javax.swing.JFrame {
                 deleteBestellung(id);
             }
         });
-        kundenPanel.setArtikelListener(new ArtikelListener(){
-            public void artikelListWeitergegeben(List<Artikel> lista){
-                saveArtikelList(lista);
-            }
-            
-            public List<Artikel> bestellung_IDArtikel(Integer order_ID){
-                return null;
-            }
-        });
+      
         bestellungPanel.setBestellungListener(new BestellungListener(){
             public void bestellungWeitergegeben(Bestellung bestellung){
                 saveBestellung(bestellung);
             }
             
-            public void deleteSelected(int id){
+            public void deleteSelected(int id){                
                 deleteBestellung(id);
             }
         });
-        bestellungPanel.setArtikelListener(new ArtikelListener(){
-            public void artikelListWeitergegeben(List<Artikel> lista){
-                saveArtikelList(lista);
-            }
-            
-            public List<Artikel> bestellung_IDArtikel(Integer order_ID){
-                return artikelListeDerBestellung(order_ID);
-            }
-        });
+      
         this.addWindowListener(new WindowAdapter(){
             @Override
             public void windowClosing(WindowEvent e){
                 super.windowClosing(e);
                 kundenRep.close();
-                bestellungRep.close();
-                artikelRep.close();
+                bestellungRep.close();                
             }
         });
         
@@ -300,21 +280,14 @@ public class HauptFenster extends javax.swing.JFrame {
         bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
     }
 
-    /** bestellung von der Datenbank löschen, inkl. alle Artikel, dann Tabelle neu laden */
-    public void deleteBestellung(int id){
+    /** Bestellung von der Datenbank löschen, inkl. alle Artikel, dann Tabelle neu laden */
+    public void deleteBestellung(int id){        
         bestellungRep.delete(id);
         bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
     }
         
     /** Artikelliste in die Datenbank speichern, davor Artikel in der Datenbank löschen */     
-    public void saveArtikelList(List<Artikel> list){
-//        int order_ID = this.bestellungRep.getLastID();
-//        artikelRep.delete(order_ID);
-//        for (Artikel t : list){
-//            t.setBestellung_ID(order_ID);
-//            t.setId(null);
-//            artikelRep.save(t);
-//        }       
+    public void saveArtikelList(List<Artikel> list){   
     }
     
     /** Artikelliste von der Datenbank laden für die im Parameter genannte Bestellung */
