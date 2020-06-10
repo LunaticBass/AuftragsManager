@@ -29,12 +29,12 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     private DefaultListModel<Artikel> listModel = new DefaultListModel<>();
     private boolean ok;
 //Bestellung
-    private Bestellung bestellung = new Bestellung();  
+    private Bestellung bestellung = new Bestellung();
 //Artikelliste
     private List<Artikel> artikelList;
+
     
-     
-      
+           
 /**    neue Bestellung */
     public BestellungNeuAendern(java.awt.Frame parent, Kunde kunde, Waehrung waehrung) {
         super(parent);
@@ -68,8 +68,8 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         this.bestellung = bestellung;
         kundeLb.setText(bestellung.getKunde().getId() + ". " + bestellung.getKunde().getName());        
         
-        setTitle("Bestellung ändern");
-        
+        setTitle("Bestellung ändern");        
+ 
 // Felder mit gegebenen Daten ausfüllen                   
         this.bezahltCb.setSelected(bestellung.isBezahlt());        
        
@@ -567,13 +567,10 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
 
     private void versandkostenOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versandkostenOkActionPerformed
         try{
-            bestellung.setEndsumme(bestellung.getEndsumme() - bestellung.getVersandkosten());
             NumberFormat format = NumberFormat.getInstance();
             Number number = format.parse(tfVersandkosten.getText());
-            bestellung.setVersandkosten(number.doubleValue());
-                        
+            bestellung.setVersandkosten(number.doubleValue());                        
             versandkostenLb.setText(String.format(String.format("%,.2f", bestellung.getVersandkosten())));
-            bestellung.setEndsumme(bestellung.getEndsumme() + bestellung.getVersandkosten());
             endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
         } catch (ParseException ex) {
                 JOptionPane.showMessageDialog(null, "Falsche Eingabe!");

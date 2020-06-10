@@ -21,7 +21,7 @@ public class BestellungTableModel extends AbstractTableModel{
     private List<Kunde> kundeList;
     
     private final Class[] columnClass = new Class[] {
-        Integer.class, Double.class, model.Waehrung.class, Boolean.class, Boolean.class
+        String.class, Double.class, model.Waehrung.class, Boolean.class, Boolean.class
     };
 
     public BestellungTableModel(List<Bestellung> bestList, List<Kunde> kundeList){
@@ -65,7 +65,7 @@ public class BestellungTableModel extends AbstractTableModel{
         
         switch (columnIndex){
             case 0:
-                return bestellung.getKunde().getId();
+                return bestellung.getKunde().getName();
             case 1:
                 return bestellung.getEndsumme();
             case 2:
@@ -80,14 +80,14 @@ public class BestellungTableModel extends AbstractTableModel{
     }
     
    
-    public String getKundenName(int kunde_ID){
-        for(Kunde kunde : kundeList){
-            if (kunde_ID == kunde.getId()){                
-                return kunde.getName();
-            }
-        }
-        return null;
-    }   
+//    public String getKundenName(int kunde_ID){
+//        for(Kunde kunde : kundeList){
+//            if (kunde_ID == kunde.getId()){                
+//                return kunde.getName();
+//            }
+//        }
+//        return null;
+//    }   
     
     public void setKundeList(List<Kunde> list){
         this.kundeList = list;

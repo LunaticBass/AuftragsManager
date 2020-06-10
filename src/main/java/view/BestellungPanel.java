@@ -5,10 +5,8 @@
  */
 package view;
 
-import view.models.NameRenderer;
 import view.models.BestellungTableModel;
 import view.models.EndsummeRenderer;
-import view.models.NameComparator;
 import view.listeners.BestellungListener;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,14 +49,8 @@ public class BestellungPanel extends javax.swing.JPanel {
         tableFuellen(bestList, kundeList);        
 
         TableRowSorter sorter = new TableRowSorter(myTableModel);
-        bestellungJTable.setRowSorter(sorter);        
-        NameComparator comparator = new NameComparator(this.kundeList);    
-        sorter.setComparator(0, comparator); 
-       
-        NameRenderer renderer = new NameRenderer();
+        bestellungJTable.setRowSorter(sorter); 
         EndsummeRenderer rendererAmount = new EndsummeRenderer();
-        renderer.setTableModel(myTableModel);
-        bestellungJTable.setDefaultRenderer(Integer.class, renderer);        
         bestellungJTable.setDefaultRenderer(Double.class, rendererAmount);        
     }
 
