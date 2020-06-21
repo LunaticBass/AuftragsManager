@@ -39,7 +39,7 @@ public class HauptFenster extends javax.swing.JFrame {
         List<Bestellung> orderList = alleBestellungenLaden();
         List<Kunde> customerList = kundenListeLaden();
         kundenPanel = new KundenPanel(customerList);
-        bestellungPanel = new BestellungPanel(orderList, customerList);
+        bestellungPanel = new BestellungPanel(orderList);
         initComponents();
         setLocationRelativeTo(null);
         getContentPane().add(kundenPanel, "fenster");
@@ -257,33 +257,33 @@ public class HauptFenster extends javax.swing.JFrame {
     private void saveKunde(Kunde kunde){
         kundenRep.save(kunde);
         kundenPanel.reloadList(kundenRep.findAll());
-        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
+        bestellungPanel.tableFuellen(bestellungRep.findAll());
     }
     
     /** Kunde von der Datenbank löschen, inkl. alle Bestellungen und Artikel, dann Tabelle neu laden */
     private void deleteKunde(int id){
         kundenRep.delete(id);
         kundenPanel.reloadList(kundenRep.findAll());
-        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
+        bestellungPanel.tableFuellen(bestellungRep.findAll());
     }
     
     /** alle Bestellungen von der Datenbak laden */
     private List<Bestellung> alleBestellungenLaden(){
         List<Bestellung> list = new ArrayList<>();
-        list = bestellungRep.findAll();
+        list = bestellungRep.findAll();        
         return list;
     }
     
     /** Bestellung in die Datenbank speichern, dann tabelle neu laden */
     public void saveBestellung(Bestellung bestellung){
         bestellungRep.save(bestellung);        
-        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
+        bestellungPanel.tableFuellen(bestellungRep.findAll());
     }
 
     /** Bestellung von der Datenbank löschen, inkl. alle Artikel, dann Tabelle neu laden */
     public void deleteBestellung(int id){        
         bestellungRep.delete(id);
-        bestellungPanel.tableFuellen(bestellungRep.findAll(), kundenRep.findAll());
+        bestellungPanel.tableFuellen(bestellungRep.findAll());
     }
         
     /** Artikelliste in die Datenbank speichern, davor Artikel in der Datenbank löschen */     

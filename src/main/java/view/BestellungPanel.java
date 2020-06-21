@@ -21,7 +21,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 import model.Bestellung;
 import model.Waehrung;
-import model.Artikel;
 import model.Kunde;
 
 /**
@@ -30,23 +29,19 @@ import model.Kunde;
  */
 public class BestellungPanel extends javax.swing.JPanel {
     private BestellungListener bestellungListener;
-    private List<Bestellung> bestList;
-    private List<Kunde> kundeList;
-    private Bestellung selectedBestellung;
-    private Kunde selectedKunde;    
-    private List<Artikel> selectedArtikelList;    
+    private List<Bestellung> bestList;    
+    private Bestellung selectedBestellung;   
     private BestellungTableModel myTableModel;    
     
     /**
      * Fenster für die Bestellungen
      */
-    public BestellungPanel(List<Bestellung> bestList, List<Kunde> kundeList) {
-        myTableModel = new BestellungTableModel(bestList, kundeList);
-        initComponents();       
-        
-        this.kundeList = kundeList;
+    public BestellungPanel(List<Bestellung> bestList) {
+        myTableModel = new BestellungTableModel(bestList);
+        initComponents();            
+      
         this.bestList = bestList;
-        tableFuellen(bestList, kundeList);        
+        tableFuellen(bestList);        
 
         TableRowSorter sorter = new TableRowSorter(myTableModel);
         bestellungJTable.setRowSorter(sorter); 
@@ -224,21 +219,19 @@ public class BestellungPanel extends javax.swing.JPanel {
         
         if (filename != null && Pattern.matches("[^<>:\"/\\\\|?* ]+", filename)){      
             int[] array = bestellungJTable.getSelectedRows();
-            ArrayList<Integer> goodSequence = new ArrayList<>();
-            for (int i = 0; i < array.length; i++) {
-                goodSequence.add(bestellungJTable.convertRowIndexToModel(array[i]));
-            }
-
-            List<Kunde> list = new ArrayList<>();
-            for (int i = 0; i < goodSequence.size(); i++) {
-                int kunde_ID = (int)myTableModel.getValueAt(goodSequence.get(i), 0);            
-                for (Kunde kunde : kundeList) {
-                    if (kunde.getId().equals(kunde_ID)){
-                        list.add(kunde);                        
-                    }
+            if (array.length != 0){
+                ArrayList<Integer> goodSequence = new ArrayList<>();
+                for (int i = 0; i < array.length; i++) {
+                    goodSequence.add(bestellungJTable.convertRowIndexToModel(array[i]));
                 }
-            }        
-            speichernAlsDatei(list, filename);
+
+                List<Kunde> list = new ArrayList<>();
+                for (int i = 0; i < goodSequence.size(); i++) {   
+                    Kunde k = myTableModel.getBestellungFrom(goodSequence.get(i)).getKunde();
+                    list.add(k);
+                }        
+                speichernAlsDatei(list, filename);
+            }
         } else{
             JOptionPane.showMessageDialog(null, "Falsche Eingabe!", 
                         "Fehler", JOptionPane.INFORMATION_MESSAGE);
@@ -264,20 +257,10 @@ public class BestellungPanel extends javax.swing.JPanel {
         
         if (id != -1){
             int rightPlace = bestellungJTable.convertRowIndexToModel(id);
-            this.selectedBestellung = myTableModel.getBestellungFrom(rightPlace);
-            
-            //   gewählter Kunde
-            for (Kunde kunde : kundeList){
-                if (kunde.getId().equals(selectedBestellung.getKunde().getId())){
-                    this.selectedKunde = kunde;
-                }
-            }
-            
-            //   Artikelliste der gewählter Bestellung
-            this.selectedArtikelList = this.selectedBestellung.getArtikelListe();
+            this.selectedBestellung = myTableModel.getBestellungFrom(rightPlace);   
             
             BestellungNeuAendern dialog = new BestellungNeuAendern(new javax.swing.JFrame(), 
-                    selectedKunde, selectedBestellung, selectedArtikelList);
+                    selectedBestellung);
 
             if (selectedBestellung.isVersendet()){
                 dialog.keineAenderungen();                
@@ -293,13 +276,9 @@ public class BestellungPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_aendernBtnActionPerformed
 
     /** Tabelle mit den erhaltenen Listen auffüllen */
-    public final void tableFuellen(List<Bestellung> bestList, List<Kunde> kundeList){
-        this.bestList = bestList;
-        this.kundeList = kundeList;
-        
-        myTableModel.setKundeList(kundeList);
-        myTableModel.setBestList(bestList);
-        
+    public final void tableFuellen(List<Bestellung> bestList){
+        this.bestList = bestList;   
+        myTableModel.setBestList(bestList);        
         gesamtUmsatz();
     }
     
@@ -314,6 +293,8 @@ public class BestellungPanel extends javax.swing.JPanel {
             for (Kunde kunde : list){
                 pw.println(kunde.toString());
             }
+            JOptionPane.showMessageDialog(null, "Daten gespeichert!", 
+                        "Daten speichern", JOptionPane.INFORMATION_MESSAGE);
         }   catch (IOException ex) {
             Logger.getLogger(BestellungPanel.class.getName()).log(Level.SEVERE, null, ex);
         }

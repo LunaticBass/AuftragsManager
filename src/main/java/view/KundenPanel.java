@@ -31,12 +31,11 @@ public class KundenPanel extends javax.swing.JPanel {
      */
     public KundenPanel(List<Kunde> customerList) {
         initComponents();
-        setVisible(true);        
-           
+        setVisible(true); 
+        
         myTableModel = (KundenTableModel) jTKunden.getModel();
         jTKunden.setAutoCreateRowSorter(true);
-        reloadList(customerList);
-        
+        reloadList(customerList);        
     }
 
     /**

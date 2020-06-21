@@ -11,14 +11,21 @@
     <class>model.HoseLang</class>
     <class>model.Schal</class>
     <class>model.Stirnband</class>
-    <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:prod"/>
-      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
-      <!-- Hibernate properties -->
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
+    <properties>      
+      <property name="hibernate.hbm2ddl.charset_name" value="UTF-8"/>
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+      <property name="javax.persistence.sql-load-script-source" value="data.sql"/>
+        <!-- Werte in pom.xml definiert -->
+      <property name="javax.persistence.jdbc.url" value="${url}"/>
+      <property name="javax.persistence.jdbc.driver" value="${driver}"/>
+    
+      <property name="hibernate.dialect" value="${dialect}"/>
+      <property name="hibernate.hbm2ddl.auto" value="${hbm2ddl}"/>     
       <property name="hibernate.format_sql" value="false"/>
-      <property name="hibernate.show_sql" value="false"/>
+      <property name="hibernate.show_sql" value="false"/>  
+      
+      <property name="javax.persistence.jdbc.user" value="${user}"/>
+      <property name="javax.persistence.jdbc.password" value="${pass}"/>
     </properties>
   </persistence-unit>
 </persistence>

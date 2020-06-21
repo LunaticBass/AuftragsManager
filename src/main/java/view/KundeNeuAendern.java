@@ -196,7 +196,6 @@ public class KundeNeuAendern extends javax.swing.JDialog {
             this.name = tfName.getText();
             this.adresse = tfAdresse.getText();                           
             this.telefon = tfTelefon.getText();
-            
             dispose();           
         }        
     }//GEN-LAST:event_okBtnActionPerformed

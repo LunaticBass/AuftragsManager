@@ -38,6 +38,8 @@ public class BestellungRepositoryJPA implements DAO<Bestellung>{
     public Bestellung findOne(int id){
         EntityManager em = emf.createEntityManager();
         Bestellung b = em.find(Bestellung.class, id);
+        System.out.println("NA");
+        System.out.println(b.getArtikelListe().size());
         em.close();
         return b;
     }
@@ -47,8 +49,8 @@ public class BestellungRepositoryJPA implements DAO<Bestellung>{
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();        
         em.merge(b);
-        em.getTransaction().commit();        
-        em.close();
+        em.getTransaction().commit();
+        em.close();        
     }
 
     @Override

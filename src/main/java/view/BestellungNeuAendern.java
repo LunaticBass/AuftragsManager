@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import model.Hose.hosenGroesse;
+//import model.Hose.hosenGroesse;
 import invoice.QuittungMaker;
 
 
@@ -30,8 +30,14 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     private boolean ok;
 //Bestellung
     private Bestellung bestellung = new Bestellung();
+    
+    private LocalDate datum;    
+    private double rabatt = 0;
+    private double versandkosten = 0;
+    private double endsumme = 0;    
 //Artikelliste
-    private List<Artikel> artikelList;
+    private List<Artikel> artikelList;   
+    private List<Artikel> artikelListOriginal = new ArrayList<>();   
 
     
            
@@ -57,7 +63,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     }
     
 /**    Bestellung ändern */
-    public BestellungNeuAendern(java.awt.Frame parent, Kunde kunde, Bestellung bestellung, List<Artikel> artikelList){
+    public BestellungNeuAendern(java.awt.Frame parent, Bestellung bestellung){
         super(parent);
         setModal(true);
         initComponents();
@@ -66,6 +72,10 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         artikelJList.setModel(listModel);                
      
         this.bestellung = bestellung;
+        this.rabatt = bestellung.getRabatt();
+        this.endsumme = bestellung.getEndsumme();
+        this.versandkosten = bestellung.getVersandkosten();
+        this.datum = bestellung.getDatum();
         kundeLb.setText(bestellung.getKunde().getId() + ". " + bestellung.getKunde().getName());        
         
         setTitle("Bestellung ändern");        
@@ -88,9 +98,10 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         }
         jDatePicker.getModel().setSelected(true);
 //  Liste mit Artikelliste auffüllen
-        this.artikelList = bestellung.getArtikelListe();        
+        this.artikelList = bestellung.getArtikelListe();      
         for (Artikel t : artikelList){
             listModel.addElement(t);
+            this.artikelListOriginal.add(t);
         } 
         
         
@@ -471,7 +482,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
     private void artikelBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_artikelBoxActionPerformed
         int selected = artikelBox.getSelectedIndex();
         Artikel artikel = null;
-        String groesse = "";
+        String groesse = null;
         String anmerkung;
     
 //        Artikelauswahl
@@ -490,15 +501,15 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
                 break;
             case 4:
                 artikel = new Stirnband();
-                break;            
+                break; 
         }
         
 //        Größeneingabe
         if (selected == 2 || selected == 3 || selected == 4 ){
-            groesse = (String)JOptionPane.showInputDialog(null, "Größenangaben:", 
+            groesse = JOptionPane.showInputDialog(null, "Größenangaben:", 
             "Größe", JOptionPane.QUESTION_MESSAGE);
         } else{
-            List<hosenGroesse> sizeList = Arrays.asList(hosenGroesse.values());
+            List<Hose.hosenGroesse> sizeList = Arrays.asList(Hose.hosenGroesse.values());
             Object[] options = new Object[sizeList.size()];
             for (int i = 0; i < options.length; i++){
                 options[i] = sizeList.get(i).getMitZahlen();
@@ -506,14 +517,9 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
           
             String groesseInZahlen = (String)JOptionPane.showInputDialog(null, "Wähle die Größe aus!", 
             "Größe", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-//            groesse = hosenGroesse.zahlenAufBuchstabe(groesseInZahlen).toString();
-            
-            for (int i = 0; i < options.length; i++){
-                if (options[i].equals(groesseInZahlen)){
-                    groesse = sizeList.get(i).toString();
-                }
-            }       
+            if (groesseInZahlen != null){
+                groesse = Hose.hosenGroesse.zahlenAufBuchstabe(groesseInZahlen).toString();
+            }
         }
 
 //        Anmerkung eingeben 
@@ -521,16 +527,17 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
             try{  
                 anmerkung = JOptionPane.showInputDialog(null, "Anmerkungen zum Artikel:", 
                         "Anmerkungen", JOptionPane.QUESTION_MESSAGE);
+                if (anmerkung != null){
+                    artikel.setGroesse(groesse);                
+                    artikel.setAnmerkung(anmerkung);
 
-                artikel.setGroesse(groesse);                
-                artikel.setAnmerkung(anmerkung);
+                    listModel.addElement(artikel);
+                    artikel.setBestellung(bestellung);
+                    this.artikelList.add(artikel);
 
-                listModel.addElement(artikel);
-                artikel.setBestellung(bestellung);
-                this.artikelList.add(artikel);
-
-                bestellung.setEndsumme(bestellung.getEndsumme() + artikel.getPreis());
-                endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
+                    endsumme += artikel.getPreis();
+                    endsummeLb.setText(String.format("%,.2f", endsumme));
+                }
             }catch (NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
             }  
@@ -541,8 +548,8 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         int selectedIndex = artikelJList.getSelectedIndex();
         Artikel ausgewaehlt = artikelJList.getSelectedValue();
         if (selectedIndex != -1){
-            bestellung.setEndsumme(bestellung.getEndsumme() - ausgewaehlt.getPreis());            
-            endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
+            endsumme -= ausgewaehlt.getPreis();
+            endsummeLb.setText(String.format("%,.2f", endsumme));
             listModel.removeElement(ausgewaehlt);
             this.artikelList.remove(selectedIndex);
         }
@@ -557,9 +564,11 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         try{             
             NumberFormat format = NumberFormat.getInstance();
             Number number = format.parse(tfRabatt.getText());
-            bestellung.setRabatt(number.doubleValue());   
-            rabattLb.setText(String.format(String.format("%,.2f", bestellung.getRabatt())));
-            endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
+            endsumme += rabatt;
+            rabatt = number.doubleValue();
+            rabattLb.setText(String.format(String.format("%,.2f", rabatt)));
+            endsumme -= rabatt;
+            endsummeLb.setText(String.format("%,.2f", endsumme));
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
         }  
@@ -569,9 +578,11 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         try{
             NumberFormat format = NumberFormat.getInstance();
             Number number = format.parse(tfVersandkosten.getText());
-            bestellung.setVersandkosten(number.doubleValue());                        
-            versandkostenLb.setText(String.format(String.format("%,.2f", bestellung.getVersandkosten())));
-            endsummeLb.setText(String.format("%,.2f", bestellung.getEndsumme()));
+            endsumme -= versandkosten;
+            versandkosten = number.doubleValue();
+            versandkostenLb.setText(String.format(String.format("%,.2f", versandkosten)));
+            endsumme += versandkosten;
+            endsummeLb.setText(String.format("%,.2f", endsumme));
         } catch (ParseException ex) {
                 JOptionPane.showMessageDialog(null, "Falsche Eingabe!");
         }  
@@ -581,7 +592,7 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
         GregorianCalendar selectedDate = (GregorianCalendar) jDatePicker.getModel().getValue();
         LocalDate dateRead = LocalDateTime.ofInstant(selectedDate.toInstant(), selectedDate.getTimeZone().toZoneId()).toLocalDate();
         
-        bestellung.setDatum(dateRead);
+        datum = dateRead;
     }//GEN-LAST:event_jDatePickerActionPerformed
 
     private void quittungBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quittungBtnActionPerformed
@@ -593,10 +604,20 @@ public class BestellungNeuAendern extends javax.swing.JDialog {
 
     /** Wiedergabe eines Bestellung Objekts, wenn Fenster mit OK geschlossen*/
     public Optional<Bestellung> getBestellung(){
-        if (this.ok){
-            bestellung.setArtikelListe(artikelList);            
+        if (this.ok){            
+            bestellung.setDatum(datum);            
+            bestellung.setEndsumme(endsumme);            
+            bestellung.setRabatt(rabatt);
+            bestellung.setVersandkosten(versandkosten);
+           
+            bestellung.setArtikelListe(artikelList);   
+            for (Artikel a : artikelList){
+                a.setBestellung(bestellung);
+            }
             return Optional.of(bestellung);
-        }else{
+        }else{            
+            bestellung.setArtikelListe(artikelListOriginal);
+            artikelList.clear();
             return Optional.empty();
         }
     }    

@@ -8,7 +8,6 @@ package view.models;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Bestellung;
-import model.Kunde;
 
 /**
  *
@@ -18,17 +17,14 @@ public class BestellungTableModel extends AbstractTableModel{
     
     final String[] columnNames = {"Name", "Gesamtsumme", "Währung", "Bezahlt", "Versendet"};    
     private List<Bestellung> bestList;
-    private List<Kunde> kundeList;
-    
+
     private final Class[] columnClass = new Class[] {
         String.class, Double.class, model.Waehrung.class, Boolean.class, Boolean.class
     };
 
-    public BestellungTableModel(List<Bestellung> bestList, List<Kunde> kundeList){
-        this.bestList = bestList;
-        this.kundeList = kundeList;        
-    }
-    
+    public BestellungTableModel(List<Bestellung> bestList){
+        this.bestList = bestList;      
+    }    
     
     @Override
     public Class getColumnClass(int columnIndex){
@@ -77,21 +73,7 @@ public class BestellungTableModel extends AbstractTableModel{
             default:
                 return null;
        }       
-    }
-    
-   
-//    public String getKundenName(int kunde_ID){
-//        for(Kunde kunde : kundeList){
-//            if (kunde_ID == kunde.getId()){                
-//                return kunde.getName();
-//            }
-//        }
-//        return null;
-//    }   
-    
-    public void setKundeList(List<Kunde> list){
-        this.kundeList = list;
-    }
+    } 
     
     public void setBestList(List<Bestellung> list){
         this.bestList = list;

@@ -28,7 +28,7 @@ public class Kunde implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    private String name;
+    private String name; 
     private String adresse;
     private String telefon;
     

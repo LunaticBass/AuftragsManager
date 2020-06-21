@@ -121,29 +121,31 @@
     <resources>
         <resource>
             <directory>src/main/resources</directory>
-            <filtering>true</filtering>
+            <filtering>true</filtering>            
         </resource>
     </resources>
 </build>
 
 <profiles>
         <profile>
-            <id>dev</id>   
+            <id>inmemory</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>         
-            <properties>
-                <db.url>jdbc:mysql://127.0.0.1:3336/kmtest?serverTimezone=Europe/Budapest</db.url>
-                <db.user>root</db.user>
-                <db.pass>1234</db.pass>
+            <properties>                
+                <url>jdbc:h2:mem:prod;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'src/main/resources/create.sql'\;RUNSCRIPT FROM 'src/main/resources/data.sql'</url>
+                <driver>org.h2.Driver</driver>
+                <dialect>org.hibernate.dialect.H2Dialect</dialect>
+                <hbm2ddl>update</hbm2ddl>                
             </properties>
         </profile>
         <profile>
-            <id>prod</id>            
+            <id>mysql</id>            
             <properties>
-                <db.url>prodURL</db.url>
-                <db.user>user</db.user>
-                <db.pass>password</db.pass>
+                <url>jdbc:mysql://127.0.0.1:3336/kmanager?serverTimezone=Europe/Budapest</url>
+                <user>root</user>
+                <pass>1234</pass>
+                <dialect>org.hibernate.dialect.MySQL57Dialect</dialect>
             </properties>
         </profile>        
     </profiles>

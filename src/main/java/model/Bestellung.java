@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -41,7 +42,11 @@ public class Bestellung implements Serializable {
     private double versandkosten;
     private double endsumme;
     private Waehrung waehrung;
+    
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean bezahlt;    
+    
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean versendet;
     
     @OneToMany(mappedBy="bestellung", fetch = FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
