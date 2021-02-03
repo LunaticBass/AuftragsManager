@@ -41,7 +41,7 @@ public class BestellungPanel extends javax.swing.JPanel {
         initComponents();            
       
         this.bestList = bestList;
-        tableFuellen(bestList);        
+        tableFuellen(bestList); 
 
         TableRowSorter sorter = new TableRowSorter(myTableModel);
         bestellungJTable.setRowSorter(sorter); 

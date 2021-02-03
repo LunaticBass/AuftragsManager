@@ -10,7 +10,8 @@ import database.dao.interfaces.DAO;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import model.Bestellung;
 import model.Kunde;
 
@@ -29,8 +30,10 @@ public class BestellungRepositoryJPA implements DAO<Bestellung>{
     @Override
     public List<Bestellung> findAll() {
         EntityManager em = emf.createEntityManager();
-        Query q = em.createQuery("SELECT b FROM Bestellung b");
-        List<Bestellung> list = q.getResultList();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Bestellung> query = builder.createQuery(Bestellung.class);
+        query.from(Bestellung.class);        
+        List<Bestellung> list = em.createQuery(query).getResultList();
         em.close();
         return list;
     }
@@ -38,8 +41,6 @@ public class BestellungRepositoryJPA implements DAO<Bestellung>{
     public Bestellung findOne(int id){
         EntityManager em = emf.createEntityManager();
         Bestellung b = em.find(Bestellung.class, id);
-        System.out.println("NA");
-        System.out.println(b.getArtikelListe().size());
         em.close();
         return b;
     }

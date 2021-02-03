@@ -15,7 +15,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Bestellung;
-import model.Artikel;
 import model.Kunde;
 
 
@@ -285,16 +284,8 @@ public class HauptFenster extends javax.swing.JFrame {
         bestellungRep.delete(id);
         bestellungPanel.tableFuellen(bestellungRep.findAll());
     }
-        
-    /** Artikelliste in die Datenbank speichern, davor Artikel in der Datenbank löschen */     
-    public void saveArtikelList(List<Artikel> list){   
-    }
-    
-    /** Artikelliste von der Datenbank laden für die im Parameter genannte Bestellung */
-    public List<Artikel> artikelListeDerBestellung(Integer order_ID){        
-        Bestellung b = bestellungRep.findOne(order_ID);        
-        return b.getArtikelListe();
-    }   
+           
+  
         
     /**
      * @param args the command line arguments

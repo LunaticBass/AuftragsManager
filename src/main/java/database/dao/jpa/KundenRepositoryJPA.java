@@ -9,9 +9,10 @@ import database.connections.EntityManagerFactoryUtil;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import model.Kunde;
 import database.dao.interfaces.DAO;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
@@ -27,8 +28,10 @@ public class KundenRepositoryJPA implements DAO<Kunde>{
     @Override
     public List<Kunde> findAll() {
         EntityManager em = emf.createEntityManager();
-        Query q = em.createQuery("SELECT k FROM Kunde k");
-        List<Kunde> lista = q.getResultList();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Kunde> query = builder.createQuery(Kunde.class);
+        query.from(Kunde.class); 
+        List<Kunde> lista = em.createQuery(query).getResultList();
         em.close();
         return lista;
     }
